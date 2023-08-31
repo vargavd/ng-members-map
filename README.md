@@ -1,6 +1,6 @@
 # Members list and map with Bootstrap and Google Maps
 
-A project-task manager written in angular, entirely for learning purposes.
+A webapp written in angular, entirely for learning purposes.
 
 - Typescript
 - Angular v14
