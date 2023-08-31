@@ -1,0 +1,25 @@
+<div 
+  [ngClass]="{'modal': true, 'show': showModal, 'fade': true}"
+  [ngStyle]="{'display': displayBlock ? 'block' : 'none'}"ű
+  (click)="onCloseModal.emit()"
+>
+  <div 
+    class="modal-dialog"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{title}}</h5>
+        <button type="button" class="btn-close" (click)="onCloseModal.emit()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div 
+  class="modal-backdrop fade show"
+  *ngIf="displayBlock"
+></div>

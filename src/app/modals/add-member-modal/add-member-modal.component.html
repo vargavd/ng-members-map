@@ -1,0 +1,49 @@
+<app-bs5-modal
+  [opened]="opened"
+  (onCloseModal)="onCloseModal.emit()"
+  title="Add Member"
+>
+  <form>
+    <div class="row g-2">
+
+      <!-- FIRST NAME -->
+      <div class="col-md-6">
+        <label for="firstName" class="form-label">First name</label>
+        <input type="text" class="form-control" id="firstName">
+      </div>
+
+      <!-- LAST NAME -->
+      <div class="col-md-6">
+        <label for="lastName" class="form-label">Last name</label>
+        <input type="text" class="form-control" id="lastName">
+      </div>
+
+      <!-- ADDRESS -->
+      <div>
+        <label for="inputAddress" class="form-label">Address</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="inputAddress">
+          <button class="btn btn-secondary">Show On Map</button>
+        </div>
+      </div>
+
+      <!-- LATITUDE -->
+      <div class="col-6">
+        <label for="latitude" class="form-label text-body-tertiary">Latitude</label>
+        <input type="text" readonly class="form-control" id="latitude">
+      </div>
+
+      <!-- LONGITUDE -->
+      <div class="col-6">
+        <label for="longitude" class="form-label text-body-tertiary">Longitude</label>
+        <input type="text" readonly class="form-control" id="longitude">
+      </div>
+
+      <!-- MAP -->
+      <div class="col-12">
+        <label class="form-label text-body-tertiary">Map</label>
+      </div>
+
+    </div>
+  </form>
+</app-bs5-modal>
