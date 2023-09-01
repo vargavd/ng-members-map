@@ -4,6 +4,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, map } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { GeocodingService } from 'src/app/services/geocoding.service';
+import { AddMarker, InitMap, MapChecker } from 'src/app/helper-funcs';
 
 @Component({
   selector: 'app-add-member-modal',
@@ -21,7 +22,7 @@ export class AddMemberModalComponent implements OnInit {
 
   // PRIVATE PROPS
   addMemberForm: FormGroup;
-  map?: google.maps.Map;
+  map: google.maps.Map | undefined;
   mapErrorMessage: string = '';
 
 
@@ -37,31 +38,12 @@ export class AddMemberModalComponent implements OnInit {
   // LIFECYCLE METHODS
   ngOnInit(): void {
     // wait for google maps to load - it could be simpler but I wanted to practise
-    this.mapCheckSubscription = Observable.create(observer => {
-      let elapsedMiliseconds = 0;
-
-      const intervalId = setInterval(() => {
-        console.log(`[${elapsedMiliseconds}ms] waitingh for google.maps...`);
-
-        if (google.maps) {
-          observer.next(true);
-          observer.complete();
-        }
-
-        elapsedMiliseconds += 100;
-
-        if (elapsedMiliseconds > 10000) {
-          observer.error('google.maps not loaded');
-        }
-      }, 100);
-
-      return () => {
-        clearInterval(intervalId);
-      }
-    }).subscribe(
+    this.mapCheckSubscription = MapChecker().subscribe(
       (isLoaded: boolean) => {
         if (isLoaded) {
-          this.initMap();
+          InitMap('add-member-modal-map', 'af51a629d115862').then(map => {
+            this.map = map
+          });
 
           // for testing
           // setTimeout(() => {
@@ -127,22 +109,8 @@ export class AddMemberModalComponent implements OnInit {
   }
 
   // PRIVATE METHODS
-  initMap = async () => {
-    const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-    this.map = new Map(document.getElementById("map") as HTMLElement, {
-      center: { lat: 21.287950, lng: -23.579779 },
-      zoom: 1,
-      mapId: 'af51a629d115862'
-    });
-  }
   showAddress = async (position: google.maps.LatLng) => {
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-
-    // add marker
-    const marker = new AdvancedMarkerElement({
-      position,
-      map: this.map
-    });
+    await AddMarker(this.map, position);
 
     // set map
     this.map.setCenter(position);
