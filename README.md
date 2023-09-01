@@ -8,6 +8,8 @@ A webapp written in angular, entirely for learning purposes.
 - Angular Reactive Forms
 - Angular Services
 - Angular Template-driven forms
+- _Google Map Javascript API_
+- _Google Geocoding API_
 - With the help of [Bootstrap 5.3](https://getbootstrap.com/) and [Bootstrap Icons](https://icons.getbootstrap.com/).
 - ... written with Visual Studio Code
 
