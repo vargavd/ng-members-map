@@ -3,45 +3,103 @@
   (onCloseModal)="onCloseModal.emit()"
   title="Add Member"
 >
-  <form>
+  <form [formGroup]="addMemberForm" (ngSubmit)="onSubmit($event)">
     <div class="row g-2">
 
       <!-- FIRST NAME -->
       <div class="col-md-6">
         <label for="firstName" class="form-label">First name</label>
-        <input type="text" class="form-control" id="firstName">
+        <input 
+          type="text" 
+          class="form-control" 
+          id="firstName"
+          formControlName="firstName"
+        >
       </div>
 
       <!-- LAST NAME -->
       <div class="col-md-6">
         <label for="lastName" class="form-label">Last name</label>
-        <input type="text" class="form-control" id="lastName">
+        <input 
+          type="text" 
+          class="form-control" 
+          id="lastName"
+          formControlName="lastName"
+        >
       </div>
 
       <!-- ADDRESS -->
       <div>
         <label for="inputAddress" class="form-label">Address</label>
         <div class="input-group">
-          <input type="text" class="form-control" id="inputAddress">
-          <button class="btn btn-secondary">Show On Map</button>
+          <input 
+            type="text" 
+            [ngClass]="{'form-control': true, 'is-invalid': !!mapErrorMessage}"
+            id="inputAddress"
+            formControlName="address"
+            (keydown)="keydownAddressInput($event)"
+          >
+          <button 
+            class="btn btn-secondary"
+            type="button"
+            [disabled]="!addMemberForm.get('address').valid"
+            (click)="showOnMapClicked()"
+          >
+            Show On Map
+          </button>
+          <div class="invalid-feedback">
+            {{mapErrorMessage}}
+          </div>
         </div>
-      </div>
-
-      <!-- LATITUDE -->
-      <div class="col-6">
-        <label for="latitude" class="form-label text-body-tertiary">Latitude</label>
-        <input type="text" readonly class="form-control" id="latitude">
-      </div>
-
-      <!-- LONGITUDE -->
-      <div class="col-6">
-        <label for="longitude" class="form-label text-body-tertiary">Longitude</label>
-        <input type="text" readonly class="form-control" id="longitude">
       </div>
 
       <!-- MAP -->
       <div class="col-12">
         <label class="form-label text-body-tertiary">Map</label>
+        <div id="map"></div>
+      </div>
+
+      <!-- LATITUDE -->
+      <div class="col-6">
+        <label for="latitude" class="form-label text-body-tertiary">Latitude</label>
+        <input 
+          type="text" 
+          readonly 
+          class="form-control text-body-tertiary"
+          id="latitude"
+          formControlName="latitude"
+        >
+      </div>
+
+      <!-- LONGITUDE -->
+      <div class="col-6">
+        <label for="longitude" class="form-label text-body-tertiary">Longitude</label>
+        <input 
+          type="text" 
+          readonly 
+          class="form-control text-body-tertiary" 
+          id="longitude"
+          formControlName="longitude"
+        >
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="col-12 d-flex justify-content-between">
+        <button 
+          class="btn btn-danger"
+          (click)="onCloseModal.emit()"
+        >
+          Cancel
+        </button>
+
+        <button 
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!addMemberForm.valid"
+        >
+          <i class="bi bi-plus-circle"></i>
+          Add Member
+        </button>
       </div>
 
     </div>

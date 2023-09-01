@@ -6,6 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Bs5ModalComponent } from './modals/bs5-modal/bs5-modal.component';
 import { AddMemberModalComponent } from './modals/add-member-modal/add-member-modal.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { AddMemberModalComponent } from './modals/add-member-modal/add-member-mo
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

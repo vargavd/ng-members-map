@@ -1,5 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
+/**
+ * Urls:
+ * https://developers.google.com/maps/documentation/javascript/examples/map-simple#maps_map_simple-html
+ * 
+ */
+
+
 @Component({
   selector: 'app-bs5-modal',
   templateUrl: './bs5-modal.component.html',
@@ -18,9 +25,9 @@ export class Bs5ModalComponent implements OnChanges {
   displayBlock = false;
 
   constructor() { }
-
-  // EMULATE BOOTSTRAP MODAL BEHAVIOR
+  
   ngOnChanges(changes: SimpleChanges): void {
+    // EMULATE BOOTSTRAP MODAL BEHAVIOR
     if (changes.opened) {
       if (changes.opened.currentValue) {
         this.displayBlock = true;
@@ -35,4 +42,5 @@ export class Bs5ModalComponent implements OnChanges {
       }
     }
   }
+  
 }
