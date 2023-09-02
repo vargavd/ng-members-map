@@ -24,6 +24,7 @@ export class AddMemberModalComponent implements OnInit {
   addMemberForm: FormGroup;
   map: google.maps.Map | undefined;
   mapErrorMessage: string = '';
+  marker: google.maps.Marker | undefined;
 
 
   // SUBSCRIPTIONS
@@ -41,9 +42,7 @@ export class AddMemberModalComponent implements OnInit {
     this.mapCheckSubscription = MapChecker().subscribe(
       (isLoaded: boolean) => {
         if (isLoaded) {
-          InitMap('add-member-modal-map', 'af51a629d115862').then(map => {
-            this.map = map
-          });
+          this.map = InitMap('add-member-modal-map', 'af51a629d115862');
 
           // for testing
           // setTimeout(() => {
@@ -109,8 +108,14 @@ export class AddMemberModalComponent implements OnInit {
   }
 
   // PRIVATE METHODS
-  showAddress = async (position: google.maps.LatLng) => {
-    await AddMarker(this.map, position);
+  showAddress = (position: google.maps.LatLng) => {
+    // remove marker
+    if (this.marker) {
+      this.marker.setMap(null);
+    }
+
+    // add marker
+    this.marker = AddMarker(this.map, position);
 
     // set map
     this.map.setCenter(position);

@@ -8,7 +8,7 @@ export const MapChecker = () => {
     const intervalId = setInterval(() => {
       console.log(`[${elapsedMiliseconds}ms] waiting for google.maps...`);
 
-      if (google.maps) {
+      if (window.hasOwnProperty('google') && google?.maps) {
         observer.next(true);
         observer.complete();
       }
@@ -26,15 +26,15 @@ export const MapChecker = () => {
   });
 }
 
-export const InitMap = async (
+export const InitMap = (
   id: string, 
   mapId: string,
   zoom = 1,
   lat = 21.287950, 
   lng = -23.579779,
 ) => {
-  const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-  const map = new Map(document.getElementById(id) as HTMLElement, {
+  // const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+  const map = new google.maps.Map(document.getElementById(id) as HTMLElement, {
     center: { lat, lng },
     zoom: zoom,
     mapId
@@ -43,15 +43,14 @@ export const InitMap = async (
   return map;
 }
 
-export const AddMarker = async (
+export const AddMarker = (
   map: google.maps.Map,
   position: google.maps.LatLng
 ) => {
-  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
-
   // add marker
-  return new AdvancedMarkerElement({
-    position,
+  return new google.maps.Marker({
+    position: position,
     map
   });
+
 }
