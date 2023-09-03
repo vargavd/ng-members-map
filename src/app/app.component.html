@@ -47,7 +47,8 @@
   </div>
 </div>
 
-<app-add-member-modal
+<app-member-modal
   [opened]="addMemberModalOpened"
-  (onCloseModal)="addMemberModalOpened = false"
-></app-add-member-modal>
+  (onCloseModal)="onCloseMemberModal()"
+  [editedMemberIndex]="editedMemberIndex"
+></app-member-modal>

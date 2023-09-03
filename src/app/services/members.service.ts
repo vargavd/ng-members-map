@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 
 import { Member } from '../models/member';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MembersService {
+  // EVENTS
+  membersChanged = new Subject<Member[]>();
+
   // PRIVATE PROPS
   private members: Member[] = [
     new Member('John', 'Doe', '901 Wildwood Way, Hacienda Heights, CA 91745, USA', 34.031521958176654, -118.00405177962188),
@@ -22,6 +26,13 @@ export class MembersService {
   }
   addMember(firstName, lastName, address, latitude, longitude): void {
     this.members.push(new Member(firstName, lastName, address, latitude, longitude));
+
+    this.membersChanged.next(this.members.slice());
+  }
+  updateMember(index: number, firstName, lastName, address, latitude, longitude): void {
+    this.members[index] = new Member(firstName, lastName, address, latitude, longitude);
+
+    this.membersChanged.next(this.members.slice());
   }
   getMember(index: number): Member {
     return this.members[index];

@@ -64,7 +64,6 @@
         <label for="latitude" class="form-label text-body-tertiary">Latitude</label>
         <input 
           type="text" 
-          readonly 
           class="form-control text-body-tertiary"
           id="latitude"
           formControlName="latitude"
@@ -76,7 +75,6 @@
         <label for="longitude" class="form-label text-body-tertiary">Longitude</label>
         <input 
           type="text" 
-          readonly 
           class="form-control text-body-tertiary" 
           id="longitude"
           formControlName="longitude"
@@ -88,6 +86,7 @@
         <button 
           class="btn btn-danger"
           (click)="onCloseModal.emit()"
+          type="button"
         >
           Cancel
         </button>
@@ -97,8 +96,15 @@
           type="submit"
           [disabled]="!addMemberForm.valid"
         >
-          <i class="bi bi-plus-circle"></i>
-          Add Member
+          <ng-container *ngIf="editedMemberIndex || editedMemberIndex === 0; else addMember">
+            <i class="bi bi-pencil-square"></i>
+            Update Member
+          </ng-container>
+
+          <ng-template #addMember>
+            <i class="bi bi-plus-circle"></i>
+            Add Member
+          </ng-template>
         </button>
       </div>
 

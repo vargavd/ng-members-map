@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { Bs5ModalComponent } from './modals/bs5-modal/bs5-modal.component';
-import { AddMemberModalComponent } from './modals/add-member-modal/add-member-modal.component';
+import { MemberModalComponent } from './modals/member-modal/member-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     Bs5ModalComponent,
-    AddMemberModalComponent
+    MemberModalComponent
   ],
   imports: [
     BrowserModule,

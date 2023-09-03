@@ -18,6 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   map: google.maps.Map | undefined;
   members: Member[] = [];
   infoWindow: google.maps.InfoWindow | undefined;
+  editedMemberIndex: number | undefined;
 
   constructor(private membersService: MembersService) {}
 
@@ -29,6 +30,27 @@ export class AppComponent implements OnInit, OnDestroy {
     // get members
     this.members = this.membersService.getMembers();
 
+    // listen for members changes
+    this.membersService.membersChanged.subscribe(
+      (members: Member[]) => {
+        // remove listeners and markers
+        this.members.forEach(member => {
+          google.maps.event.clearInstanceListeners(member.marker);
+
+          member.marker?.setMap(null);
+        });
+
+        this.members = members;
+
+        // add markers and listeners again
+        this.members.forEach(this.addMarker);
+
+        // center map
+        this.map?.setCenter(new google.maps.LatLng(21.287950, -23));
+        this.map.setZoom(2);
+      }
+    );
+
     // init map
     this.mapCheckSubscription = MapChecker().subscribe(
       this.initMap,
@@ -39,11 +61,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.mapCheckSubscription.unsubscribe();
-  }
-
-  // PUBLIC METHODS
-  addMember = async (position: google.maps.LatLng) => {
-    await AddMarker(this.map, position);
   }
 
 
@@ -66,24 +83,30 @@ export class AppComponent implements OnInit, OnDestroy {
       if (editButton) {
         editButton.addEventListener('click', () => {
           const id = +editButton.getAttribute('data-id').split('-')[1];
-          console.log(this.membersService.getMember(id));
+          this.editedMemberIndex = id;
+          this.addMemberModalOpened = true;
         });
       }
     });
 
     // add markers
-    this.members.forEach((member, index) => {
-      member.marker = AddMarker(this.map, new google.maps.LatLng(member.latitude, member.longitude));
-
-      // add info window content
-      member.marker?.addListener('click', () => {
-        this.infoWindow?.setContent(`
-          <h3>${member.firstName} ${member.lastName}</h3>
-          <p>${member.address}</p>
-          <button data-id="marker-${index}">Edit</button>
-        `);
-        this.infoWindow?.open(this.map, member.marker);
-      });
+    this.members.forEach(this.addMarker);
+  }
+  addMarker = (member, index) => {
+    member.marker = AddMarker(this.map, new google.maps.LatLng(member.latitude, member.longitude));
+    
+    // add info window content
+    member.marker?.addListener('click', () => {
+      this.infoWindow?.setContent(`
+        <h3>${member.firstName} ${member.lastName}</h3>
+        <p>${member.address}</p>
+        <button data-id="marker-${index}">Edit</button>
+      `);
+      this.infoWindow?.open(this.map, member.marker);
     });
+  }
+  onCloseMemberModal = () => {
+    this.addMemberModalOpened = false;
+    this.editedMemberIndex = undefined;
   }
 }
