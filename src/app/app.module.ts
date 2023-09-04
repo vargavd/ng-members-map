@@ -8,12 +8,14 @@ import { Bs5ModalComponent } from './modals/bs5-modal/bs5-modal.component';
 import { MemberModalComponent } from './modals/member-modal/member-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ListSidePanelComponent } from './list-side-panel/list-side-panel.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     Bs5ModalComponent,
-    MemberModalComponent
+    MemberModalComponent,
+    ListSidePanelComponent
   ],
   imports: [
     BrowserModule,

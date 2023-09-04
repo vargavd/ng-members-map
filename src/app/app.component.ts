@@ -19,6 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   members: Member[] = [];
   infoWindow: google.maps.InfoWindow | undefined;
   editedMemberIndex: number | undefined;
+  membersPanelOpened = true;
 
   constructor(private membersService: MembersService) {}
 
@@ -46,8 +47,15 @@ export class AppComponent implements OnInit, OnDestroy {
         this.members.forEach(this.addMarker);
 
         // center map
-        this.map?.setCenter(new google.maps.LatLng(21.287950, -23));
-        this.map.setZoom(2);
+        const selectedMember = this.members.find(member => member.selected);
+
+        if (selectedMember) {
+          this.map?.setCenter(new google.maps.LatLng(selectedMember.latitude, selectedMember.longitude));
+          this.map?.setZoom(15);
+        } else {
+          this.map?.setCenter(new google.maps.LatLng(21.287950, -23));
+          this.map.setZoom(2);
+        }
       }
     );
 
@@ -63,14 +71,24 @@ export class AppComponent implements OnInit, OnDestroy {
     this.mapCheckSubscription.unsubscribe();
   }
 
+  // DOM EVENTS
+  onCloseMemberModal = () => {
+    this.addMemberModalOpened = false;
+    this.editedMemberIndex = undefined;
+  }
+  onCloseMembersPanel = () => {
+    this.membersPanelOpened = false;
+  }
 
-  // PRIVATE METHODS
+  // HELPER METHODS
   addGoogleMapsScript = () => {
     const googleMapsScript = document.createElement('script');
     googleMapsScript.src = 'https://maps.googleapis.com/maps/api/js?key=' + [' ', ' ', ' ', 'o', 'z', 'j', 'K', 'Y', 'Y', 'c', 'a', 'u', 'R', 'N', 'b', 'g', 'K', 'v', 'M', 'O', 'u', 'G', '-', 'C', 'o', 'y', 'g', 'J', 'M', '9', '0', 'w', 'm', '4', '3', 'A', 'y', 'S', 'a', 'z', 'I', 'A', ' ', ' ', ' '].reverse().join('').trim();
     googleMapsScript.type = 'text/javascript';
     document.body.appendChild(googleMapsScript);
   }
+
+  // MAIN METHODS
   initMap = () => {
     this.map = InitMap('main-map', 'a9b42ab050a9812e', 2, 21.287950, -23);
 
@@ -104,9 +122,5 @@ export class AppComponent implements OnInit, OnDestroy {
       `);
       this.infoWindow?.open(this.map, member.marker);
     });
-  }
-  onCloseMemberModal = () => {
-    this.addMemberModalOpened = false;
-    this.editedMemberIndex = undefined;
   }
 }

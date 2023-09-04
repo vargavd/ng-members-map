@@ -6,10 +6,17 @@
     <div class="d-flex justify-content-between w-100">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active">Map</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link">List</a>
+          <input 
+            type="checkbox" 
+            class="btn-check" 
+            id="btn-check" 
+            autocomplete="off"
+            [checked]="membersPanelOpened"
+            (change)="membersPanelOpened = $event.target.checked"
+          >
+          <label class="btn btn-outline-primary" for="btn-check">
+            Members List
+          </label>
         </li>
         <li class="nav-item ms-2">
           <button 
@@ -41,11 +48,16 @@
   </div>
 </nav>
 
-<div class="container-fluid">
+<main class="container-fluid">
+  <app-list-side-panel
+    [opened]="membersPanelOpened"
+    (onClosePanel)="onCloseMembersPanel()"
+  ></app-list-side-panel>
+  
   <div id="main-map">
 
   </div>
-</div>
+</main>
 
 <app-member-modal
   [opened]="addMemberModalOpened"

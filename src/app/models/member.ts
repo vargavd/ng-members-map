@@ -5,6 +5,7 @@ export class Member {
     public address: string,
     public latitude: number,
     public longitude: number,
-    public marker: google.maps.Marker | undefined = undefined
+    public marker: google.maps.Marker | undefined = undefined,
+    public selected: boolean = false
   ) {}
 }
