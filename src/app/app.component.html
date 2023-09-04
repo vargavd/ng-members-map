@@ -56,9 +56,10 @@
     (onDeleteMember)="openDeleteMemberModal($event)"
   ></app-list-side-panel>
   
-  <div id="main-map">
-
-  </div>
+  <app-main-map
+    (onEditMember)="openEditMemberModal($event)"
+    (onDeleteMember)="openDeleteMemberModal($event)"
+  ></app-main-map>
 </main>
 
 <app-member-modal

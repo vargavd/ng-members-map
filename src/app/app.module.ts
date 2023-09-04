@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ListSidePanelComponent } from './list-side-panel/list-side-panel.component';
 import { DeleteMemberComponent } from './modals/delete-member/delete-member.component';
+import { MainMapComponent } from './main-map/main-map.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { DeleteMemberComponent } from './modals/delete-member/delete-member.comp
     Bs5ModalComponent,
     MemberModalComponent,
     ListSidePanelComponent,
-    DeleteMemberComponent
+    DeleteMemberComponent,
+    MainMapComponent
   ],
   imports: [
     BrowserModule,
