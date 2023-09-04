@@ -16,6 +16,8 @@ export class MembersService {
     new Member('Jane', 'Doe', 'Rome St, Newark, NJ 07105, United States', 40.72619818517835, -74.1422788961509),
     new Member('John', 'Smith', 'Parc des Beaumonts, 93100 Montreuil, France', 48.857902939296714, 2.4521800977977986),
     new Member('Jane', 'Smith', 'Av. de America, s/n, 28983 Parla, Madrid, Spain', 40.23189035602494, -3.7597457848679356),
+    new Member('Dave', 'Smith', '9V5M+HM Augsburg, Germany', 48.35900252560118, 10.884605654802417),
+    new Member('Dave', 'Doe', 'GR48+7M London, United Kingdom', 51.505776804736584, -0.18325586476235745),
   ];
 
   constructor() { }
