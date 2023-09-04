@@ -29,11 +29,15 @@
       }"
       (click)="onClickMember(i)"
     >
-      <div class="ms-2 me-auto">
+      <div class="ms-2 me-auto w-100">
         <div class="fw-bold">
           {{ member.firstName }} {{ member.lastName }}
         </div>
         <span class="fs-6 fst-italic">{{ member.address }}</span>
+        <div class="mt-2 d-flex justify-content-between">
+          <button class="btn btn-outline-primary btn-sm" (click)="$event.stopPropagation(); onEditMember.emit(i);">Edit</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="$event.stopPropagation(); onDeleteMember.emit(i)">Delete</button>
+        </div>
       </div>
     </li>
     <!-- <li class="list-group-item d-flex justify-content-between align-items-start">

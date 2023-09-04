@@ -34,6 +34,15 @@
   }
 
   .list-group-numbered {
-    cursor: pointer;
+    li {
+      cursor: pointer;
+
+      &.active {
+        button {
+          border-color: var(--bs-white);
+          color: var(--bs-white);
+        }
+      }
+    }
   }
 }

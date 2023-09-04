@@ -12,14 +12,20 @@ import { Member } from './models/member';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  // PRIVATE PROPERTIES
+  // MODAL/PANEL STATES
   addMemberModalOpened = false;
+  deleteMemberModalOpened = false;
+  membersPanelOpened = true;
+
+  // MODAL PROPERTIES
+  editedMemberIndex: number | undefined;
+  deleteMemberIndex: number | undefined;
+
+  // OTHER PRIVATE PROPERTIES
   mapCheckSubscription: Subscription | undefined;
   map: google.maps.Map | undefined;
   members: Member[] = [];
   infoWindow: google.maps.InfoWindow | undefined;
-  editedMemberIndex: number | undefined;
-  membersPanelOpened = true;
 
   constructor(private membersService: MembersService) {}
 
@@ -74,7 +80,11 @@ export class AppComponent implements OnInit, OnDestroy {
   // DOM EVENTS
   onCloseMemberModal = () => {
     this.addMemberModalOpened = false;
-    this.editedMemberIndex = undefined;
+    setTimeout(() => this.editedMemberIndex = undefined, 400); // wait for animation to finish
+  }
+  onCloseDeleteMemberModal = () => {
+    this.deleteMemberModalOpened = false;
+    setTimeout(() => this.deleteMemberIndex = undefined, 400); // wait for animation to finish
   }
   onCloseMembersPanel = () => {
     this.membersPanelOpened = false;
@@ -87,6 +97,14 @@ export class AppComponent implements OnInit, OnDestroy {
     googleMapsScript.type = 'text/javascript';
     document.body.appendChild(googleMapsScript);
   }
+  openEditMemberModal = (index: number) => {
+    this.editedMemberIndex = index;
+    this.addMemberModalOpened = true;
+  }
+  openDeleteMemberModal = (index: number) => {
+    this.deleteMemberIndex = index;
+    this.deleteMemberModalOpened = true;
+  }
 
   // MAIN METHODS
   initMap = () => {
@@ -95,14 +113,22 @@ export class AppComponent implements OnInit, OnDestroy {
     // add info window
     this.infoWindow = new google.maps.InfoWindow();
 
-    // add event listener for info window
+    // add event listeners to buttons in info window
     this.infoWindow.addListener('domready', () => {
-      const editButton = document.querySelector('button[data-id^="marker-"]');
+      const editButton = document.querySelector('button.edit');
+      const deleteButton = document.querySelector('button.delete');
+
       if (editButton) {
         editButton.addEventListener('click', () => {
           const id = +editButton.getAttribute('data-id').split('-')[1];
-          this.editedMemberIndex = id;
-          this.addMemberModalOpened = true;
+          this.openEditMemberModal(id);
+        });
+      }
+
+      if (deleteButton) {
+        deleteButton.addEventListener('click', () => {
+          const id = +deleteButton.getAttribute('data-id').split('-')[1];
+          this.openDeleteMemberModal(id);
         });
       }
     });
@@ -110,7 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // add markers
     this.members.forEach(this.addMarker);
   }
-  addMarker = (member, index) => {
+  addMarker = (member: Member, index: number) => {
     member.marker = AddMarker(this.map, new google.maps.LatLng(member.latitude, member.longitude));
     
     // add info window content
@@ -118,7 +144,10 @@ export class AppComponent implements OnInit, OnDestroy {
       this.infoWindow?.setContent(`
         <h3>${member.firstName} ${member.lastName}</h3>
         <p>${member.address}</p>
-        <button data-id="marker-${index}">Edit</button>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-outline-primary btn-sm edit" data-id="marker-${index}">Edit</button>
+          <button class="btn btn-outline-danger btn-sm delete" data-id="marker-${index}">Delete</button>
+        </div>
       `);
       this.infoWindow?.open(this.map, member.marker);
     });

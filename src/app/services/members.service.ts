@@ -34,6 +34,10 @@ export class MembersService {
 
     this.membersChanged.next(this.members.slice());
   }
+  deleteMember(index: number): void {
+    this.members.splice(index, 1);
+    this.membersChanged.next(this.members.slice());
+  }
   getMember(index: number): Member {
     return this.members[index];
   }

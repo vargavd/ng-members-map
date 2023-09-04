@@ -52,6 +52,8 @@
   <app-list-side-panel
     [opened]="membersPanelOpened"
     (onClosePanel)="onCloseMembersPanel()"
+    (onEditMember)="openEditMemberModal($event)"
+    (onDeleteMember)="openDeleteMemberModal($event)"
   ></app-list-side-panel>
   
   <div id="main-map">
@@ -64,3 +66,11 @@
   (onCloseModal)="onCloseMemberModal()"
   [editedMemberIndex]="editedMemberIndex"
 ></app-member-modal>
+
+<app-delete-member
+  [opened]="deleteMemberModalOpened"
+  [memberIndex]="deleteMemberIndex"
+  (onCloseModal)="onCloseDeleteMemberModal()"
+>
+
+</app-delete-member>

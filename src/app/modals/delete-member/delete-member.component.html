@@ -1,0 +1,27 @@
+<app-bs5-modal
+  [opened]="opened"
+  (onCloseModal)="onCloseModal.emit()"
+  title="Are you sure you want to delete {{member ? member.firstName : ''}} {{member ? member.lastName : ''}}?"
+>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-between">
+      <button 
+        class="btn btn-primary"
+        (click)="onCloseModal.emit()"
+        type="button"
+      >
+        Cancel
+      </button>
+
+      <button 
+        class="btn btn-danger"
+        type="submit"
+        (click)="deleteMember()"
+      >
+        <i class="bi bi-trash"></i>
+        DELETE
+      </button>
+    </div>
+
+  </div>
+</app-bs5-modal>

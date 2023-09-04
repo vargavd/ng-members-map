@@ -9,13 +9,15 @@ import { MemberModalComponent } from './modals/member-modal/member-modal.compone
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ListSidePanelComponent } from './list-side-panel/list-side-panel.component';
+import { DeleteMemberComponent } from './modals/delete-member/delete-member.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     Bs5ModalComponent,
     MemberModalComponent,
-    ListSidePanelComponent
+    ListSidePanelComponent,
+    DeleteMemberComponent
   ],
   imports: [
     BrowserModule,

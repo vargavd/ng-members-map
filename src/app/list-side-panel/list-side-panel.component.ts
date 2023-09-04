@@ -16,6 +16,8 @@ export class ListSidePanelComponent implements OnInit {
 
   // OUTPUTS
   @Output() onClosePanel = new EventEmitter<void>();
+  @Output() onEditMember = new EventEmitter<number>();
+  @Output() onDeleteMember = new EventEmitter<number>();
 
   // PUBLIC PROPERTIES
   closeButtonHovered = false;
