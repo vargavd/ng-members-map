@@ -86,18 +86,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
         // show address on map
         this.showAddress(new google.maps.LatLng(member.latitude, member.longitude), false);
       } else {
-        // reset form and map
-        if (this.addMemberForm) {
-          this.addMemberForm.reset();
-        }
-
-        // clear map
-        this.mapErrorMessage = '';
-        if (this.marker) {
-          this.marker.setMap(null);
-          this.map.setCenter(new google.maps.LatLng(21.287950,  23.579779));
-          this.map.setZoom(1);
-        }
+        this.resetFormAndMap();
       }
     }
   }
@@ -162,6 +151,10 @@ export class MemberModalComponent implements OnInit, OnChanges {
     }
 
     this.onCloseModal.emit();
+
+    setTimeout(() => {
+      this.resetFormAndMap();
+    }, 300)
   }
 
   // PRIVATE METHODS
@@ -193,5 +186,17 @@ export class MemberModalComponent implements OnInit, OnChanges {
       latitude: '',
       longitude: ''
     });
+  }
+  resetFormAndMap() {
+    if (this.addMemberForm) {
+      this.addMemberForm.reset();
+    }
+
+    this.mapErrorMessage = '';
+    if (this.marker) {
+      this.marker.setMap(null);
+      this.map.setCenter(new google.maps.LatLng(21.287950,  23.579779));
+      this.map.setZoom(1);
+    }
   }
 }
