@@ -21,6 +21,7 @@ export class MembersService {
   //   new Member('Dave', 'Doe', 'GR48+7M London, United Kingdom', 51.505776804736584, -0.18325586476235745),
   // ];
   private members: Member[];
+  private filterText: string = '';
 
   constructor(
     private http: HttpClient
@@ -28,7 +29,13 @@ export class MembersService {
 
   // PUBLIC METHODS
   getMembers(): Member[] { 
-    return this.members.slice();
+    return this.members.filter(member => 
+      {
+        return member.firstName.toLowerCase().includes(this.filterText.toLowerCase()) ||
+          member.lastName.toLowerCase().includes(this.filterText.toLowerCase()) ||
+          member.address.toLowerCase().includes(this.filterText.toLowerCase());
+      }
+    ).slice();
   }
   downloadMembers(): Observable<Member[]> {
     return this.http.get<{[key:string]: BaseMember}>(
@@ -119,6 +126,11 @@ export class MembersService {
     });
 
     this.membersChanged.next(this.members.slice());
+  }
+  setFilterText(filterText: string): void {
+    this.filterText = filterText;
+
+    this.membersChanged.next(this.getMembers());
   }
 
   // this service acts like a guard as well:

@@ -52,4 +52,9 @@ export class AppComponent {
     this.deleteMemberId = id;
     this.deleteMemberModalOpened = true;
   }
+
+  // OTHER EVENTS
+  onFilterMembers(filterText: string) {
+    this.membersService.setFilterText(filterText);
+  }
 }
