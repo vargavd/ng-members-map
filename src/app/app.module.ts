@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-
 import { AppComponent } from './app.component';
 import { Bs5ModalComponent } from './modals/bs5-modal/bs5-modal.component';
 import { MemberModalComponent } from './modals/member-modal/member-modal.component';
@@ -23,7 +21,6 @@ import { MainMapComponent } from './main-map/main-map.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule
   ],
