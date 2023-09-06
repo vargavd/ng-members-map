@@ -31,7 +31,7 @@
           'align-items-start': true,
           'active': member.selected
         }"
-        (click)="onClickMember(i)"
+        (click)="onClickMember(member.id)"
       >
         <div class="ms-2 me-auto w-100">
           <div class="fw-bold">
@@ -39,8 +39,8 @@
           </div>
           <span class="fs-6 fst-italic">{{ member.address }}</span>
           <div class="mt-2 d-flex justify-content-between">
-            <button class="btn btn-outline-primary btn-sm" (click)="$event.stopPropagation(); onEditMember.emit(i);">Edit</button>
-            <button class="btn btn-outline-danger btn-sm" (click)="$event.stopPropagation(); onDeleteMember.emit(i)">Delete</button>
+            <button class="btn btn-outline-primary btn-sm" (click)="$event.stopPropagation(); onEditMember.emit(member.id);">Edit</button>
+            <button class="btn btn-outline-danger btn-sm" (click)="$event.stopPropagation(); onDeleteMember.emit(member.id)">Delete</button>
           </div>
         </div>
       </li>

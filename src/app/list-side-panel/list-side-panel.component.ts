@@ -38,7 +38,7 @@ export class ListSidePanelComponent implements OnInit {
   onClosePanelClick() {
     this.onClosePanel.emit();
   }
-  onClickMember(index: number) {
-    this.membersService.changeMemberSelection(index);
+  onClickMember(id: string) {
+    this.membersService.changeMemberSelection(id);
   }
 }

@@ -11,7 +11,7 @@ export class DeleteMemberComponent implements OnInit, OnChanges {
   member: Member;
 
   // INPUTS
-  @Input() memberIndex: number;
+  @Input() memberId: string | undefined;
   @Input() opened = false;
 
   // OUTPUTS
@@ -20,20 +20,20 @@ export class DeleteMemberComponent implements OnInit, OnChanges {
   constructor(private membersService: MembersService) { }
 
   ngOnInit(): void {
-    if (this.memberIndex) {
-      this.member = this.membersService.getMember(this.memberIndex);
+    if (this.memberId) {
+      this.member = this.membersService.getMember(this.memberId);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.memberIndex) {
-      this.member = this.membersService.getMember(this.memberIndex);
+    if (changes.memberId) {
+      this.member = this.membersService.getMember(this.memberId);
     }
   }
 
   // MAIN METHODS
   deleteMember() {
-    this.membersService.deleteMember(this.memberIndex);
+    this.membersService.deleteMember(this.member.id);
     this.onCloseModal.emit();
   }
 }

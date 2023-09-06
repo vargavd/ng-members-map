@@ -15,7 +15,7 @@ import { MembersService } from 'src/app/services/members.service';
 export class MemberModalComponent implements OnInit, OnChanges {
   // PUBLIC PROPERTIES
   @Input() opened = false;
-  @Input() editedMemberIndex: number | undefined;
+  @Input() editedMemberId: string | undefined;
 
 
   // PUBLIC EVENTS
@@ -69,10 +69,10 @@ export class MemberModalComponent implements OnInit, OnChanges {
     this.addMemberForm.get('address').valueChanges.subscribe(this.addressChanged.bind(this));    
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.editedMemberIndex) {
-      if (changes.editedMemberIndex.currentValue !== undefined) {
+    if (changes.editedMemberId) {
+      if (changes.editedMemberId.currentValue !== undefined) {
         // get member
-        const member = this.membersService.getMember(changes.editedMemberIndex.currentValue);
+        const member = this.membersService.getMember(changes.editedMemberId.currentValue);
 
         // set form values
         this.addMemberForm.patchValue({
@@ -131,9 +131,9 @@ export class MemberModalComponent implements OnInit, OnChanges {
       throw new Error('Form is not valid - shouldn\'t be possible');
     }
 
-    if (this.editedMemberIndex !== undefined) {
+    if (this.editedMemberId !== undefined) {
       this.membersService.updateMember(
-        this.editedMemberIndex,
+        this.editedMemberId,
         this.addMemberForm.value.firstName,
         this.addMemberForm.value.lastName,
         this.addMemberForm.value.address,

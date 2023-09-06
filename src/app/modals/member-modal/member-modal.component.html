@@ -96,7 +96,7 @@
           type="submit"
           [disabled]="!addMemberForm.valid"
         >
-          <ng-container *ngIf="editedMemberIndex || editedMemberIndex === 0; else addMember">
+          <ng-container *ngIf="editedMemberId ; else addMember">
             <i class="bi bi-pencil-square"></i>
             Update Member
           </ng-container>

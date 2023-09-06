@@ -21,8 +21,8 @@ export class MainMapComponent implements OnInit, OnDestroy {
 
 
   // OUTPUTS
-  @Output() onEditMember: EventEmitter<number> = new EventEmitter();
-  @Output() onDeleteMember: EventEmitter<number> = new EventEmitter();
+  @Output() onEditMember: EventEmitter<string> = new EventEmitter();
+  @Output() onDeleteMember: EventEmitter<string> = new EventEmitter();
 
 
   constructor(
@@ -73,6 +73,20 @@ export class MainMapComponent implements OnInit, OnDestroy {
         console.error(error);
       }
     );
+
+    // // wait for members AND google to load
+    // const member$ = this.membersService.downloadMembers();
+    // const map$ = MapChecker();
+    // const combined$ = forkJoin([member$, map$]); // forkJoin unsubscribes automatically
+
+    // combined$.subscribe({
+    //   next: ([members]) => {
+    //     // load map when both members and google.map is ready
+    //     this.members = members;
+    //     this.initMap();
+    //   },
+    //   error: (error) => console.error(error),
+    // });
   }
   ngOnDestroy() {
     this.mapCheckSubscription.unsubscribe();
@@ -93,14 +107,14 @@ export class MainMapComponent implements OnInit, OnDestroy {
 
       if (editButton) {
         editButton.addEventListener('click', () => {
-          const id = +editButton.getAttribute('data-id').split('-')[1];
+          const id = editButton.getAttribute('data-id');
           this.onEditMember.emit(id);
         });
       }
 
       if (deleteButton) {
         deleteButton.addEventListener('click', () => {
-          const id = +deleteButton.getAttribute('data-id').split('-')[1];
+          const id = deleteButton.getAttribute('data-id');
           this.onDeleteMember.emit(id);
         });
       }
@@ -118,8 +132,8 @@ export class MainMapComponent implements OnInit, OnDestroy {
         <h3>${member.firstName} ${member.lastName}</h3>
         <p>${member.address}</p>
         <div class="d-flex justify-content-between">
-          <button class="btn btn-outline-primary btn-sm edit" data-id="marker-${index}">Edit</button>
-          <button class="btn btn-outline-danger btn-sm delete" data-id="marker-${index}">Delete</button>
+          <button class="btn btn-outline-primary btn-sm edit" data-id="${member.id}">Edit</button>
+          <button class="btn btn-outline-danger btn-sm delete" data-id="${member.id}">Delete</button>
         </div>
       `);
       this.infoWindow?.open(this.map, member.marker);
