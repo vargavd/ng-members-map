@@ -1,15 +1,15 @@
 /// <reference types="google.maps" />
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MembersService } from './services/members.service';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   // MAIN STATE
   membersDownloaded = false;
 
@@ -23,11 +23,19 @@ export class AppComponent {
   deleteMemberId: string | undefined;
 
 
-  constructor(private membersService: MembersService) {
-    this.membersService.downloadMembers().subscribe({
+  constructor(private membersService: MembersService) {}
+
+  // LIFECYCLES
+  ngOnInit() {
+    this.membersService.filteredMembers.pipe(take(1)).subscribe({
       next: () => this.membersDownloaded = true,
       error: error => console.error(error),
     });
+
+    this.membersService.downloadMembers();
+  }
+  ngOnDestroy() {
+    this.membersService.filteredMembers.unsubscribe();
   }
 
   // CLOSE EVENTS

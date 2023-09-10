@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { take } from 'rxjs';
 import { Member } from 'src/app/models/member';
 import { MembersService } from 'src/app/services/members.service';
 
@@ -19,19 +20,27 @@ export class DeleteMemberComponent implements OnInit, OnChanges {
 
   constructor(private membersService: MembersService) { }
 
+  // LIFECYCLES
   ngOnInit(): void {
     if (this.memberId) {
-      this.member = this.membersService.getMember(this.memberId);
+      this.getMember();
     }
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.memberId) {
-      this.member = this.membersService.getMember(this.memberId);
+      this.getMember();
     }
   }
 
   // MAIN METHODS
+  getMember() {
+    this.membersService.filteredMembers.pipe(take(1)).subscribe({
+      next: members => {
+        this.member = members.find(member => member.id === this.memberId);
+      },
+      error: error => console.error(error),
+    });
+  }
   deleteMember() {
     this.membersService.deleteMember(this.member.id);
     this.onCloseModal.emit();

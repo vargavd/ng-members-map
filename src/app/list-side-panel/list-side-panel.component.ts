@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MembersService } from '../services/members.service';
 import { Member } from '../models/member';
 
@@ -7,7 +7,7 @@ import { Member } from '../models/member';
   templateUrl: './list-side-panel.component.html',
   styleUrls: ['./list-side-panel.component.scss']
 })
-export class ListSidePanelComponent implements OnInit {
+export class ListSidePanelComponent implements OnInit, OnDestroy {
   // PRIVATE PROPERTIES
   members: Member[];
 
@@ -24,14 +24,14 @@ export class ListSidePanelComponent implements OnInit {
 
   constructor(private membersService: MembersService) {}
 
-  ngOnInit(): void {
-    this.members = this.membersService.getMembers();
-
-    this.membersService.membersChanged.subscribe(
-      (members: Member[]) => {
-        this.members = members;
-      }
-    );
+  ngOnInit() {
+    this.membersService.filteredMembers.subscribe({
+      next: members => this.members = members,
+      error: error => console.error(error),
+    });
+  }
+  ngOnDestroy() {
+    this.membersService.filteredMembers.unsubscribe();
   }
 
   // DOM EVENTS

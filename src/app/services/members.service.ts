@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { BaseMember, Member } from '../models/member';
-import { Observable, Subject, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MembersService {
   // EVENTS
-  membersChanged = new Subject<Member[]>();
+  filteredMembers = new BehaviorSubject<Member[]>([]);
 
   // PRIVATE
   // private members: Member[] = [
@@ -23,22 +23,11 @@ export class MembersService {
   private members: Member[];
   private filterText: string = '';
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
   // PUBLIC METHODS
-  getMembers(): Member[] { 
-    return this.members.filter(member => 
-      {
-        return member.firstName.toLowerCase().includes(this.filterText.toLowerCase()) ||
-          member.lastName.toLowerCase().includes(this.filterText.toLowerCase()) ||
-          member.address.toLowerCase().includes(this.filterText.toLowerCase());
-      }
-    ).slice();
-  }
-  downloadMembers(): Observable<Member[]> {
-    return this.http.get<{[key:string]: BaseMember}>(
+  downloadMembers(): void {
+    this.http.get<{[key:string]: BaseMember}>(
       'https://ng-members-map-default-rtdb.europe-west1.firebasedatabase.app/members.json'
     ).pipe(map(
       membersResponse => {
@@ -55,7 +44,13 @@ export class MembersService {
 
         return members;
       })
-    );
+    ).subscribe({
+      next: (members) => {
+        this.members = members;
+        this.updateFilteredMembers();
+      },
+      error: (error) => console.error(error),
+    })
   }
   addMember(firstName: string, lastName: string, address: string, latitude:number, longitude:number): void {
     this.http.post<{ name: string }>(
@@ -67,13 +62,11 @@ export class MembersService {
       next: ({name}) => {
         this.members.push(new Member(name, firstName, lastName, address, latitude, longitude));
 
-        this.membersChanged.next(this.members.slice());
+        this.updateFilteredMembers();
       },
       error: (error) => console.error(error),
       complete: () => console.log('complete')
     });
-
-    // this.membersChanged.next(this.members.slice());
   }
   updateMember(id: string, firstName: string, lastName: string, address: string, latitude: number, longitude: number): void {
     this.http.put(
@@ -93,10 +86,9 @@ export class MembersService {
           member.longitude = longitude;
         }
 
-        this.membersChanged.next(this.members.slice());
+        this.updateFilteredMembers();
       },
-      error: (error) => console.error(error),
-      complete: () => console.log('complete')
+      error: (error) => console.error(error)
     });
   }
   deleteMember(id: string): void {
@@ -105,19 +97,20 @@ export class MembersService {
     ).subscribe({ 
       next: () => {
         this.members.splice(this.members.findIndex(member => member.id === id), 1);
-        this.membersChanged.next(this.members.slice()); 
+        
+        this.updateFilteredMembers();
       },
       error: (error) => console.error(error),
       complete: () => console.log('complete')
     });
   }
-  getMember(id: string): Member {
-    return this.members.find(member => member.id === id);
+  getMember(id: string): Observable<Member> {
+    return this.filteredMembers.pipe(
+      map(members => members.find(member => member.id === id))
+    );
   }
   changeMemberSelection(id: string): void {
     this.members.forEach((member) => {
-      console.log(id, member.id);
-
       if (member.id === id) {
         member.selected = !member.selected;
       } else {
@@ -125,12 +118,25 @@ export class MembersService {
       }
     });
 
-    this.membersChanged.next(this.members.slice());
+    this.updateFilteredMembers();
   }
   setFilterText(filterText: string): void {
     this.filterText = filterText;
 
-    this.membersChanged.next(this.getMembers());
+    this.updateFilteredMembers();
+  }
+
+  // PRIVATE METHODS
+  private updateFilteredMembers() {      
+    const filteredMembers =  this.members.filter(member => 
+      {
+        return member.firstName.toLowerCase().includes(this.filterText.toLowerCase()) ||
+          member.lastName.toLowerCase().includes(this.filterText.toLowerCase()) ||
+          member.address.toLowerCase().includes(this.filterText.toLowerCase());
+      }
+    ).slice();
+
+    this.filteredMembers.next(filteredMembers);
   }
 
   // this service acts like a guard as well:

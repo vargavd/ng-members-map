@@ -1,7 +1,7 @@
 /// <reference types="google.maps" />
 
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { Observable, Subscription, map } from 'rxjs';
+import { Observable, Subscription, map, take } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { GeocodingService } from 'src/app/services/geocoding.service';
 import { AddMarker, InitMap, MapChecker } from 'src/app/helper-funcs';
@@ -71,20 +71,21 @@ export class MemberModalComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.editedMemberId) {
       if (changes.editedMemberId.currentValue !== undefined) {
-        // get member
-        const member = this.membersService.getMember(changes.editedMemberId.currentValue);
+        this.membersService.getMember(changes.editedMemberId.currentValue).pipe(take(1)).subscribe({
+          next: member => {
+            // set form values
+            this.addMemberForm.patchValue({
+              firstName: member.firstName,
+              lastName: member.lastName,
+              address: member.address,
+              latitude: member.latitude,
+              longitude: member.longitude
+            });
 
-        // set form values
-        this.addMemberForm.patchValue({
-          firstName: member.firstName,
-          lastName: member.lastName,
-          address: member.address,
-          latitude: member.latitude,
-          longitude: member.longitude
+            // show address on map
+            this.showAddress(new google.maps.LatLng(member.latitude, member.longitude), false);
+          }
         });
-
-        // show address on map
-        this.showAddress(new google.maps.LatLng(member.latitude, member.longitude), false);
       } else {
         this.resetFormAndMap();
       }

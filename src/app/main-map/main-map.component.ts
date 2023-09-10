@@ -14,7 +14,7 @@ export class MainMapComponent implements OnInit, OnDestroy {
   map: google.maps.Map | undefined;
   members: Member[] | undefined;
   infoWindow: google.maps.InfoWindow | undefined;
-
+  mapInitialized = false;
 
   // SUBS
   mapCheckSubscription: Subscription | undefined;
@@ -25,54 +25,53 @@ export class MainMapComponent implements OnInit, OnDestroy {
   @Output() onDeleteMember: EventEmitter<string> = new EventEmitter();
 
 
-  constructor(
-    private membersService: MembersService
-  ) { }
+  constructor(private membersService: MembersService) {}
 
 
   // LIFECYCLE HOOKS
-  ngOnInit(): void {
+  ngOnInit() {
     // get google maps
     this.addGoogleMapsScript();
-    
-    // get members
-    this.members = this.membersService.getMembers();
 
-    // listen for members changes
-    this.membersService.membersChanged.subscribe(
-      (members: Member[]) => {
-        // remove listeners and markers
-        this.members.forEach(member => {
-          google.maps.event.clearInstanceListeners(member.marker);
+    this.mapCheckSubscription = MapChecker().subscribe({
+      next: () => {
+        this.initMap();
 
-          member.marker?.setMap(null);
-        });
+        // get members and subscribe for change
+        this.membersService.filteredMembers.subscribe(
+          (members: Member[]) => {
+            // remove listeners and markers
+            if (this.members) {
+              this.members.forEach(member => {
+                google.maps.event.clearInstanceListeners(member.marker);
+                
+                member.marker?.setMap(null);
+              });
+            }
 
-        this.members = members;
+            // update local markers
+            this.members = members;
 
-        // add markers and listeners again
-        this.members.forEach(this.addMarker);
+            // add markers and listeners again
+            this.members.forEach(this.addMarker);
 
-        // center map
-        const selectedMember = this.members.find(member => member.selected);
+            // center map
+            const selectedMember = this.members.find(member => member.selected);
 
-        if (selectedMember) {
-          this.map?.setCenter(new google.maps.LatLng(selectedMember.latitude, selectedMember.longitude));
-          this.map?.setZoom(15);
-        } else {
-          this.map?.setCenter(new google.maps.LatLng(21.287950, -23));
-          this.map.setZoom(2);
-        }
-      }
-    );
-
-    // init map
-    this.mapCheckSubscription = MapChecker().subscribe(
-      this.initMap,
-      (error: any) => {
+            if (selectedMember) {
+              this.map?.setCenter(new google.maps.LatLng(selectedMember.latitude, selectedMember.longitude));
+              this.map?.setZoom(15);
+            } else {
+              this.map?.setCenter(new google.maps.LatLng(21.287950, -23));
+              this.map.setZoom(2);
+            }
+          }
+        );
+      },
+      error: (error: any) => {
         console.error(error);
       }
-    );
+    });
 
     // // wait for members AND google to load
     // const member$ = this.membersService.downloadMembers();
@@ -119,9 +118,6 @@ export class MainMapComponent implements OnInit, OnDestroy {
         });
       }
     });
-
-    // add markers
-    this.members.forEach(this.addMarker);
   }
   addMarker = (member: Member, index: number) => {
     member.marker = AddMarker(this.map, new google.maps.LatLng(member.latitude, member.longitude));
