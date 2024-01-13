@@ -23,11 +23,11 @@ export class MembersService {
   private members: Member[];
   private filterText: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // PUBLIC METHODS
   downloadMembers(): void {
-    this.http.get<{[key:string]: BaseMember}>(
+    this.http.get<{ [key: string]: BaseMember }>(
       'https://ng-members-map-default-rtdb.europe-west1.firebasedatabase.app/members.json'
     ).pipe(map(
       membersResponse => {
@@ -52,14 +52,14 @@ export class MembersService {
       error: (error) => console.error(error),
     })
   }
-  addMember(firstName: string, lastName: string, address: string, latitude:number, longitude:number): void {
+  addMember(firstName: string, lastName: string, address: string, latitude: number, longitude: number): void {
     this.http.post<{ name: string }>(
-      'https://ng-members-map-default-rtdb.europe-west1.firebasedatabase.app/members.json', 
+      'https://ng-members-map-default-rtdb.europe-west1.firebasedatabase.app/members.json',
       {
         firstName, lastName, address, latitude, longitude
       }
     ).subscribe({
-      next: ({name}) => {
+      next: ({ name }) => {
         this.members.push(new Member(name, firstName, lastName, address, latitude, longitude));
 
         this.updateFilteredMembers();
@@ -94,10 +94,10 @@ export class MembersService {
   deleteMember(id: string): void {
     this.http.delete<void>(
       `https://ng-members-map-default-rtdb.europe-west1.firebasedatabase.app/members/${id}.json`
-    ).subscribe({ 
+    ).subscribe({
       next: () => {
         this.members.splice(this.members.findIndex(member => member.id === id), 1);
-        
+
         this.updateFilteredMembers();
       },
       error: (error) => console.error(error),
@@ -127,13 +127,12 @@ export class MembersService {
   }
 
   // PRIVATE METHODS
-  private updateFilteredMembers() {      
-    const filteredMembers =  this.members.filter(member => 
-      {
-        return member.firstName.toLowerCase().includes(this.filterText.toLowerCase()) ||
-          member.lastName.toLowerCase().includes(this.filterText.toLowerCase()) ||
-          member.address.toLowerCase().includes(this.filterText.toLowerCase());
-      }
+  private updateFilteredMembers() {
+    const filteredMembers = this.members.filter(member => {
+      return member.firstName.toLowerCase().includes(this.filterText.toLowerCase()) ||
+        member.lastName.toLowerCase().includes(this.filterText.toLowerCase()) ||
+        member.address.toLowerCase().includes(this.filterText.toLowerCase());
+    }
     ).slice();
 
     this.filteredMembers.next(filteredMembers);

@@ -16,13 +16,13 @@ export class ListSidePanelComponent implements OnInit, OnDestroy {
 
   // OUTPUTS
   @Output() onClosePanel = new EventEmitter<void>();
-  @Output() onEditMember = new EventEmitter<number>();
-  @Output() onDeleteMember = new EventEmitter<number>();
+  @Output() onEditMember = new EventEmitter<string>();
+  @Output() onDeleteMember = new EventEmitter<string>();
 
   // PUBLIC PROPERTIES
   closeButtonHovered = false;
 
-  constructor(private membersService: MembersService) {}
+  constructor(private membersService: MembersService) { }
 
   ngOnInit() {
     this.membersService.filteredMembers.subscribe({

@@ -32,7 +32,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
   // SUBSCRIPTIONS
   mapCheckSubscription: Subscription;
 
-  
+
   constructor(
     private geocodingService: GeocodingService,
     private membersService: MembersService
@@ -66,7 +66,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
     });
 
     // for clearing errors
-    this.addMemberForm.get('address').valueChanges.subscribe(this.addressChanged.bind(this));    
+    this.addMemberForm.get('address').valueChanges.subscribe(this.addressChanged.bind(this));
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.editedMemberId) {
@@ -122,7 +122,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
           console.error(error);
           this.mapErrorMessage = error?.message ? (error.message) : 'Couldn\'t find the address';
         }
-    );
+      );
   }
   onSubmit(event: Event) {
     event.preventDefault();
@@ -196,7 +196,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
     this.mapErrorMessage = '';
     if (this.marker) {
       this.marker.setMap(null);
-      this.map.setCenter(new google.maps.LatLng(21.287950,  23.579779));
+      this.map.setCenter(new google.maps.LatLng(21.287950, 23.579779));
       this.map.setZoom(1);
     }
   }

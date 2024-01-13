@@ -19,11 +19,11 @@ export class AppComponent implements OnInit, OnDestroy {
   membersPanelOpened = true;
 
   // MODAL PROPERTIES
-  editedMemberId: number | undefined;
+  editedMemberId: string | undefined;
   deleteMemberId: string | undefined;
 
 
-  constructor(private membersService: MembersService) {}
+  constructor(private membersService: MembersService) { }
 
   // LIFECYCLES
   ngOnInit() {
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.membersService.downloadMembers();
   }
   ngOnDestroy() {
-    this.membersService.filteredMembers.unsubscribe();
+    this.membersService.filteredMembers.unsubscribe(); // I am not sure that is needed, as we only take 1 value in the ngOnInit
   }
 
   // CLOSE EVENTS
@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   // OPEN EVENTS
-  openEditMemberModal = (index: number) => {
+  openEditMemberModal = (index: string) => {
     this.editedMemberId = index;
     this.addMemberModalOpened = true;
   }
