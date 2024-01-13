@@ -109,10 +109,10 @@ export class MembersService {
       map(members => members.find(member => member.id === id))
     );
   }
-  changeMemberSelection(id: string): void {
+  changeMemberSelection(id: string, toTrue = false): void {
     this.members.forEach((member) => {
       if (member.id === id) {
-        member.selected = !member.selected;
+        member.selected = toTrue || (!member.selected);
       } else {
         member.selected = false;
       }

@@ -25,7 +25,7 @@ export class MainMapComponent implements OnInit, OnDestroy {
   @Output() onDeleteMember: EventEmitter<string> = new EventEmitter();
 
 
-  constructor(private membersService: MembersService) {}
+  constructor(private membersService: MembersService) { }
 
 
   // LIFECYCLE HOOKS
@@ -44,7 +44,7 @@ export class MainMapComponent implements OnInit, OnDestroy {
             if (this.members) {
               this.members.forEach(member => {
                 google.maps.event.clearInstanceListeners(member.marker);
-                
+
                 member.marker?.setMap(null);
               });
             }
@@ -121,18 +121,18 @@ export class MainMapComponent implements OnInit, OnDestroy {
   }
   addMarker = (member: Member, index: number) => {
     member.marker = AddMarker(this.map, new google.maps.LatLng(member.latitude, member.longitude));
-    
+
     // add info window content
     member.marker?.addListener('click', () => {
-      this.infoWindow?.setContent(`
-        <h3>${member.firstName} ${member.lastName}</h3>
-        <p>${member.address}</p>
-        <div class="d-flex justify-content-between">
-          <button class="btn btn-outline-primary btn-sm edit" data-id="${member.id}">Edit</button>
-          <button class="btn btn-outline-danger btn-sm delete" data-id="${member.id}">Delete</button>
-        </div>
-      `);
-      this.infoWindow?.open(this.map, member.marker);
+      if (member.selected) {
+        this.openInfoWindow(member);
+      } else {
+        this.membersService.changeMemberSelection(member.id, true);
+
+        setTimeout(() => {
+          this.openInfoWindow(member);
+        }, 500);
+      }
     });
   }
 
@@ -143,5 +143,16 @@ export class MainMapComponent implements OnInit, OnDestroy {
     googleMapsScript.src = 'https://maps.googleapis.com/maps/api/js?key=' + [' ', ' ', ' ', 'o', 'z', 'j', 'K', 'Y', 'Y', 'c', 'a', 'u', 'R', 'N', 'b', 'g', 'K', 'v', 'M', 'O', 'u', 'G', '-', 'C', 'o', 'y', 'g', 'J', 'M', '9', '0', 'w', 'm', '4', '3', 'A', 'y', 'S', 'a', 'z', 'I', 'A', ' ', ' ', ' '].reverse().join('').trim();
     googleMapsScript.type = 'text/javascript';
     document.body.appendChild(googleMapsScript);
+  }
+  openInfoWindow = (member: Member) => {
+    this.infoWindow?.setContent(`
+      <h3>${member.firstName} ${member.lastName}</h3>
+      <p>${member.address}</p>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-outline-primary btn-sm edit" data-id="${member.id}">Edit</button>
+        <button class="btn btn-outline-danger btn-sm delete" data-id="${member.id}">Delete</button>
+      </div>
+    `);
+    this.infoWindow?.open(this.map, member.marker);
   }
 }
