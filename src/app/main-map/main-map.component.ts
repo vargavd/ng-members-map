@@ -37,8 +37,6 @@ export class MainMapComponent implements OnInit, OnDestroy {
       next: () => {
         this.initMap();
 
-        const memberWasSelectedPreviously = this.members?.some(m => m.selected);
-
         // get members and subscribe for change
         this.membersService.filteredMembers.subscribe(
           (members: Member[]) => {
@@ -60,13 +58,15 @@ export class MainMapComponent implements OnInit, OnDestroy {
             // center map
             const selectedMember = this.members.find(member => member.selected);
 
-            if (!memberWasSelectedPreviously && selectedMember) {
+            if (selectedMember) {
               this.map?.setCenter(new google.maps.LatLng(selectedMember.latitude, selectedMember.longitude));
               this.map?.setZoom(15);
             } else {
               this.map?.setCenter(new google.maps.LatLng(21.287950, -23));
               this.map.setZoom(2);
             }
+
+            this.infoWindow.close();
           }
         );
       },
@@ -133,7 +133,7 @@ export class MainMapComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
           this.openInfoWindow(member);
-        }, 500);
+        }, 300);
       }
     });
   }
