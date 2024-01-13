@@ -64,5 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // OTHER EVENTS
   onFilterMembers(filterText: string) {
     this.membersService.setFilterText(filterText);
+
+    this.membersPanelOpened = true;
   }
 }

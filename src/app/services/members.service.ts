@@ -123,17 +123,16 @@ export class MembersService {
   setFilterText(filterText: string): void {
     this.filterText = filterText;
 
-    this.updateFilteredMembers();
+    this.updateFilteredMembers(true);
   }
 
   // PRIVATE METHODS
-  private updateFilteredMembers() {
+  private updateFilteredMembers(resetSelection = false) {
     const filteredMembers = this.members.filter(member => {
       return member.firstName.toLowerCase().includes(this.filterText.toLowerCase()) ||
         member.lastName.toLowerCase().includes(this.filterText.toLowerCase()) ||
         member.address.toLowerCase().includes(this.filterText.toLowerCase());
-    }
-    ).slice();
+    }).map(member => ({ ...member, selected: (resetSelection ? false : member.selected) }));
 
     this.filteredMembers.next(filteredMembers);
   }
