@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 
@@ -11,6 +11,7 @@ import { ListSidePanelComponent } from './list-side-panel/list-side-panel.compon
 import { DeleteMemberComponent } from './modals/delete-member/delete-member.component';
 import { MainMapComponent } from './main-map/main-map.component';
 import { geocodingReducer } from './store/geocoding/geocoding.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,10 @@ import { geocodingReducer } from './store/geocoding/geocoding.reducer';
     HttpClientModule,
     StoreModule.forRoot({
       geocodingData: geocodingReducer
+    }),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: false
     })
   ],
   providers: [],
