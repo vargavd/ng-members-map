@@ -1,7 +1,7 @@
 /// <reference types="google.maps" />
 
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { Observable, Subscription, map, take } from 'rxjs';
+import { Observable, Subscription, filter, map, take } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 // NgRX
@@ -12,7 +12,7 @@ import { GeocodingService } from 'src/app/services/geocoding.service';
 import { AddMarker, InitMap, MapChecker } from 'src/app/helper-funcs';
 import { MembersService } from 'src/app/services/members.service';
 import { GeocodingState } from 'src/app/store/geocoding/geocoding.reducer';
-import { isItLoadingAddressSelector } from 'src/app/store/geocoding/geocoding.selectors';
+import { getCoordsSelector, isItLoadingAddressSelector } from 'src/app/store/geocoding/geocoding.selectors';
 
 @Component({
   selector: 'app-member-modal',
@@ -39,6 +39,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
   // SUBSCRIPTIONS
   mapCheckSubscription: Subscription;
   isItLoadingGeocode$: Observable<boolean> = this.store.select(isItLoadingAddressSelector);
+  loadedCoords$: Observable<{ latitude: string, longitude: string }> = this.store.select(getCoordsSelector);
 
   constructor(
     private geocodingService: GeocodingService,
@@ -75,6 +76,18 @@ export class MemberModalComponent implements OnInit, OnChanges {
 
     // for clearing errors
     this.addMemberForm.get('address').valueChanges.subscribe(this.addressChanged.bind(this));
+
+    // display coords 
+    this.loadedCoords$.pipe(
+      filter(position => (!!position.latitude && !!position.longitude))
+    ).subscribe((position) => {
+      console.log(position);
+
+      this.showAddress(new google.maps.LatLng({
+        lat: +position.latitude,
+        lng: +position.longitude
+      }), true);
+    });
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.editedMemberId) {
@@ -183,11 +196,13 @@ export class MemberModalComponent implements OnInit, OnChanges {
     this.map.setCenter(position);
     this.map.setZoom(15);
 
+    console.log(position);
+
     // set form values
     if (updateInputs) {
       this.addMemberForm.patchValue({
-        latitude: position.lat,
-        longitude: position.lng
+        latitude: position.lat(),
+        longitude: position.lng()
       });
     }
   }

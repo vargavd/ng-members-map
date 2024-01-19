@@ -5,7 +5,7 @@ export class BaseMember {
     public address: string,
     public latitude: number,
     public longitude: number,
-  ) {}
+  ) { }
 }
 
 
@@ -22,4 +22,9 @@ export class Member extends BaseMember {
   ) {
     super(firstName, lastName, address, latitude, longitude);
   }
+}
+
+export interface Coord {
+  latitude: string,
+  longitude: string
 }
