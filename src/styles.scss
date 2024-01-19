@@ -29,3 +29,22 @@
     background: #aaa;
   }
 }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border-top: 2px solid white;
+  border-right: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  display: block;
+}

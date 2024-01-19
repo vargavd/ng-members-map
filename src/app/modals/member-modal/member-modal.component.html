@@ -45,11 +45,16 @@
             [disabled]="!addMemberForm.get('address').valid"
             (click)="showOnMapClicked()"
           >
-            Show On Map
+            <ng-container *ngIf="!(isItLoadingGeocode$ | async)">Show On Map</ng-container>
+            <span class="spinner" *ngIf="isItLoadingGeocode$ | async">
+              
+            </span>
           </button>
           <div class="invalid-feedback">
             {{mapErrorMessage}}
           </div>
+        </div>
+        <div class="form-text">
         </div>
       </div>
 

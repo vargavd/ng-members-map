@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { StoreModule } from '@ngrx/store';
 
 import { AppComponent } from './app.component';
 import { Bs5ModalComponent } from './modals/bs5-modal/bs5-modal.component';
@@ -9,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ListSidePanelComponent } from './list-side-panel/list-side-panel.component';
 import { DeleteMemberComponent } from './modals/delete-member/delete-member.component';
 import { MainMapComponent } from './main-map/main-map.component';
+import { geocodingReducer } from './store/geocoding/geocoding.reducer';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,10 @@ import { MainMapComponent } from './main-map/main-map.component';
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    StoreModule.forRoot({
+      geocodingData: geocodingReducer
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

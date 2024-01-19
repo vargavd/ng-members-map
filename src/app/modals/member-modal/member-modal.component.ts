@@ -3,9 +3,15 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Observable, Subscription, map, take } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+// NgRX
+import { Store } from '@ngrx/store';
+import { geocodeAddress, addressConverted } from 'src/app/store/geocoding/geocoding.actions';
+
 import { GeocodingService } from 'src/app/services/geocoding.service';
 import { AddMarker, InitMap, MapChecker } from 'src/app/helper-funcs';
 import { MembersService } from 'src/app/services/members.service';
+import { GeocodingState } from 'src/app/store/geocoding/geocoding.reducer';
 
 @Component({
   selector: 'app-member-modal',
@@ -31,11 +37,12 @@ export class MemberModalComponent implements OnInit, OnChanges {
 
   // SUBSCRIPTIONS
   mapCheckSubscription: Subscription;
-
+  isItLoadingGeocode$: Observable<boolean> = this.store.select(appState => (appState.geocodingData.status === 'loading'));
 
   constructor(
     private geocodingService: GeocodingService,
-    private membersService: MembersService
+    private membersService: MembersService,
+    private store: Store<{ geocodingData: GeocodingState }>
   ) { }
 
 
@@ -108,21 +115,24 @@ export class MemberModalComponent implements OnInit, OnChanges {
     }
   };
   showOnMapClicked = async () => {
-    this.geocodingService.getGeocoding(this.addMemberForm.value.address)
-      .pipe(map((responseData: google.maps.GeocoderResponse) => {
-        if (responseData.results.length === 0) {
-          throw new Error('No results found');
-        }
+    this.store.dispatch(geocodeAddress({ address: this.addMemberForm.value.address }));
 
-        return responseData.results[0].geometry.location;
-      }))
-      .subscribe(
-        position => this.showAddress(position),
-        error => {
-          console.error(error);
-          this.mapErrorMessage = error?.message ? (error.message) : 'Couldn\'t find the address';
-        }
-      );
+    // OLD SERVICE APPROACH:
+    // this.geocodingService.getGeocoding(this.addMemberForm.value.address)
+    //   .pipe(map((responseData: google.maps.GeocoderResponse) => {
+    //     if (responseData.results.length === 0) {
+    //       throw new Error('No results found');
+    //     }
+
+    //     return responseData.results[0].geometry.location;
+    //   }))
+    //   .subscribe(
+    //     position => this.showAddress(position),
+    //     error => {
+    //       console.error(error);
+    //       this.mapErrorMessage = error?.message ? (error.message) : 'Couldn\'t find the address';
+    //     }
+    //   );
   }
   onSubmit(event: Event) {
     event.preventDefault();
