@@ -12,6 +12,8 @@ import { DeleteMemberComponent } from './modals/delete-member/delete-member.comp
 import { MainMapComponent } from './main-map/main-map.component';
 import { geocodingReducer } from './store/geocoding/geocoding.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import { GeocodingEffects } from './store/geocoding/geocoding.effects';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: false
-    })
+    }),
+    EffectsModule.forRoot([GeocodingEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

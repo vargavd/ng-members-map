@@ -12,6 +12,7 @@ import { GeocodingService } from 'src/app/services/geocoding.service';
 import { AddMarker, InitMap, MapChecker } from 'src/app/helper-funcs';
 import { MembersService } from 'src/app/services/members.service';
 import { GeocodingState } from 'src/app/store/geocoding/geocoding.reducer';
+import { isItLoadingAddressSelector } from 'src/app/store/geocoding/geocoding.selectors';
 
 @Component({
   selector: 'app-member-modal',
@@ -37,7 +38,7 @@ export class MemberModalComponent implements OnInit, OnChanges {
 
   // SUBSCRIPTIONS
   mapCheckSubscription: Subscription;
-  isItLoadingGeocode$: Observable<boolean> = this.store.select(appState => (appState.geocodingData.status === 'loading'));
+  isItLoadingGeocode$: Observable<boolean> = this.store.select(isItLoadingAddressSelector);
 
   constructor(
     private geocodingService: GeocodingService,

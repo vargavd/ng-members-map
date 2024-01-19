@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { geocodeAddress } from "./geocoding.actions";
+import { addressConverted, geocodeAddress } from "./geocoding.actions";
 
 export interface GeocodingState {
   address: string;
@@ -27,5 +27,14 @@ export const geocodingReducer = createReducer(
     }
 
     return newGeocodingState;
+  }),
+  on(addressConverted, (state: GeocodingState, { latitude, longitude }) => {
+    const newState: GeocodingState = {
+      address: state.address,
+      coords: { latitude, longitude },
+      status: 'converted'
+    };
+
+    return newState;
   })
-)
+);

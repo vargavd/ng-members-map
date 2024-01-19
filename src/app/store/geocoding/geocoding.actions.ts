@@ -7,5 +7,5 @@ export const geocodeAddress = createAction(
 
 export const addressConverted = createAction(
   '[Geocode API] Adress Converted',
-  props<{ latitude: number, longitude: number }>()
+  props<{ latitude: string, longitude: string }>()
 );
